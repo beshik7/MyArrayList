@@ -3,6 +3,7 @@ package org.example;
 import java.util.Arrays;
 import java.util.NoSuchElementException;
 
+
 public class ArrayListIntegerImpl implements IntegerList {
     private Integer[] items;
     private int size;
@@ -13,12 +14,13 @@ public class ArrayListIntegerImpl implements IntegerList {
         this.items = new Integer[initialCapacity];
         this.size = 0;
     }
+
     @Override
     public Integer add(Integer item) {
         if (item == null)
             throw new IllegalArgumentException("Nulls are not allowed");
         if (size == items.length)
-            items = Arrays.copyOf(items, size * 2);
+            grow();
         items[size] = item;
         size++;
         return item;
@@ -135,12 +137,56 @@ public class ArrayListIntegerImpl implements IntegerList {
     }
 
     // Новые методы
-    private void sort(){
+    private void sort() {
         Arrays.sort(this.items, 0, size);
     }
 
-    private int binarySearch(Integer item) {
-        this.sort();
+    private void grow() {
+        int newSize = items.length + (items.length / 2); //массив увеличен на 50%
+        items = Arrays.copyOf(items, newSize);
+
+    }
+
+    private void quickSort(int start, int end) {
+        if (start < end) {
+            int partitionIndex = partition(start, end);
+            quickSort(start, partitionIndex - 1); //сортировка левой половины
+            quickSort(partitionIndex + 1, end); //правой половины
+        }
+    }
+
+    private int partition(int start, int end) {
+        int pivot = items[end];
+        int i = (start - 1); //index for small elements
+        for (int j = start; j < end; j++) {
+            //if element is smaller than or equal to pivot
+            if (items[j] <= pivot) {
+                i++;
+                //swap [i] with [j]
+                Integer temp = items[i];
+                items[i] = items[j];
+                items[j] = temp;
+            }
+        }
+        //swap[i+1] with [end] or pivot
+        Integer temp = items[i + 1];
+        items[i + 1] = items[end];
+        items[end] = temp;
+        return i + 1;
+    }
+
+    public int binarySearch(Integer item) {
+        quickSort(0, size - 1);
         return Arrays.binarySearch(this.items, 0, size, item);
     }
+
+    public Integer[] sortedList() {
+        quickSort(0, size - 1);
+        return Arrays.copyOf(items, size);
+    }
+
+    public int findItem(Integer item) {
+        return binarySearch(item);
+    }
+
 }

@@ -2,16 +2,14 @@ package com.skypro.myArrayList;
 
 import org.example.ArrayListIntegerImpl;
 import org.example.IntegerList;
-import org.junit.jupiter.api.Assertions;
-import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertFalse;
+import static org.junit.jupiter.api.Assertions.*;
 
 public class ArrayListIntegerTest {
     private IntegerList list;
+
     @BeforeEach
     public void setup() {
         list = new ArrayListIntegerImpl(10);
@@ -57,5 +55,44 @@ public class ArrayListIntegerTest {
         list.add(3);
         list.add(1);
         assertEquals(1, list.indexOf(new Integer(3)));
+    }
+
+    @Test
+    public void binarySearchForExistingItem() {
+        ArrayListIntegerImpl list = new ArrayListIntegerImpl(5);
+        list.add(1);
+        list.add(2);
+        list.add(3);
+        list.add(4);
+        list.add(5);
+
+        // Assume you have implemented a public method findItem that calls binarySearch
+        int index = list.findItem(4);
+
+        assertEquals(3, index);
+    }
+
+    @Test
+    public void addNewItemWhenArrayIsFull() {
+        ArrayListIntegerImpl list = new ArrayListIntegerImpl(2);
+        list.add(1);
+        list.add(2);
+        list.add(3);  //сподвигнет array к росту
+
+        assertEquals(3, list.size());
+        assertTrue(list.contains(3));
+    }
+
+    @Test
+    public void sortArray() {
+        ArrayListIntegerImpl list = new ArrayListIntegerImpl(5);
+        list.add(5);
+        list.add(3);
+        list.add(4);
+        list.add(1);
+        list.add(2);
+        Integer[] sortedList = list.sortedList();
+
+        assertArrayEquals(new Integer[]{1, 2, 3, 4, 5}, sortedList);
     }
 }
